@@ -9,27 +9,28 @@ GetData <- function(loc)
   blogs <-
     readLines(
       # "D:\\Lab\\Final\\final\\en_US\\en_US.blogs.txt",
-      paste(loc,"\\en_US.blogs.txt"),
+      paste(loc,"\\en_US.blogs.txt", sep = ""),
       warn = F,
       encoding = 'UTF-8'
     )
   news <-
     readLines(
-      paste(loc,"\\en_US.news.txt"),
+      paste(loc,"\\en_US.news.txt", sep = ""),
       warn = F,
       encoding = 'UTF-8'
     )
   twitter <-
     readLines(
-      paste(loc,"\\en_US.twitter.txt"),
+      paste(loc,"\\en_US.twitter.txt", sep = ""),
       warn = F ,
       encoding = 'UTF-8'
     )
   
+  perOfSample <- 0.002
   
-  lessBlogs = sample(blogs, .2 * length(blogs))
-  lessNews = sample(news, .2 * length(news))
-  lessTwitter = sample(twitter, .2 * length(twitter))
+  lessBlogs = sample(blogs, perOfSample * length(blogs))
+  lessNews = sample(news, perOfSample * length(news))
+  lessTwitter = sample(twitter, perOfSample * length(twitter))
   
   combinedData = c(lessBlogs, lessNews, lessTwitter)
   
@@ -57,6 +58,9 @@ GetData <- function(loc)
   #cleanData  <- sapply(cleanData, function(x) {tolower(x)}) # Giving error due to special character
   cleanData <- unique(cleanData)
   
-  return(cleanData)
+  dfWithRowNo <- data.frame(cleanData)
+  dfWithRowNo <- dfWithRowNo %>% mutate(id = seq.int(nrow(dfWithRowNo)))
+  
+  return(dfWithRowNo)
   
 }
