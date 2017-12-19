@@ -1,10 +1,11 @@
 # load the packages
 library(tidytext)
 library(dplyr)
+library(stringi)
 
 GetData <- function(loc)
 {
-  loc
+  #loc
   # load the files
   blogs <-
     readLines(
@@ -53,9 +54,16 @@ GetData <- function(loc)
     gsub('\\d+', '', x)
   })
   
+  # # remove all non graphical characters
+  # cleanData  <- sapply(cleanData, function(x) {
+  #   gsub('[^[:graph:]]', '', x)
+  # })
+  
+  cleanData <- stri_trans_general(cleanData, "latin-ascii")
+  
   # Need to check if data steming is required
   
-  #cleanData  <- sapply(cleanData, function(x) {tolower(x)}) # Giving error due to special character
+  cleanData  <- tolower(cleanData) # Giving error due to special character
   cleanData <- unique(cleanData)
   
   dfWithRowNo <- data.frame(cleanData)
