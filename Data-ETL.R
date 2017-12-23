@@ -59,7 +59,8 @@ GetData <- function(loc)
   #   gsub('[^[:graph:]]', '', x)
   # })
   
-  cleanData <- stri_trans_general(cleanData, "latin-ascii")
+  #cleanData <- stri_trans_general(cleanData, "latin-ascii")
+  cleanData <- iconv(cleanData,to="ASCII",sub="")
   
   # Need to check if data steming is required
   
