@@ -64,5 +64,3 @@ The goal of this exercise is to create a product to highlight the prediction alg
 5. N-Gram creation, https://www.tidytextmining.com/
 6. Stupid backoff explained, http://www.aclweb.org/anthology/D07-1090.pdf
 
-You can also embed plots, for example:
-
