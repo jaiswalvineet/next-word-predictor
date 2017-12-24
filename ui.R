@@ -16,7 +16,7 @@ shinyUI(fluidPage(
   # Sidebar with a slider input for number of bins
   sidebarLayout(
     sidebarPanel(
-      textInput("inputtext", "Give your input text", "How are you "),
+      textInput("inputtext", "Give your input text", "your house is"),
       helpText("Type in a sentence above and the results will display to the right. It may take sometime to load"),
       sliderInput("noOfPredictedWord",
                   "Number of Predicted words:",
@@ -32,7 +32,9 @@ shinyUI(fluidPage(
                  h4('Next word prediction with probability', align = "center"),
                  plotOutput('nextWOrdGraph'),
                  h4('Word Cloud', align = "center"),
-                 plotOutput('wordCloud')
+                 plotOutput('wordCloud'),
+                 h4('Filtered Data', align = "center"),
+                 dataTableOutput('formattedData')
                  ),
         # tabPanel("Word Cloud ", plotOutput("wordCloud"),
         #          helpText("This word cloud is after removing common words")),
