@@ -45,7 +45,11 @@ GetDataFromFile <- function() {
   fourGram <-  GetNGram(rawFromETL,4)
   fiveGram <-  GetNGram(rawFromETL,5)
   
-  save(oneGram,twoGram,threeGram,fourGram,fiveGram, file='fiveGram.RData')
+  write.csv(oneGram, file='oneGram.csv')
+  write.csv(twoGram, file='twoGram.csv')
+  write.csv(threeGram, file='threeGram.csv')
+  write.csv(fourGram,file='fourGram.csv')
+  write.csv(fiveGram, file='fiveGram.csv')
 }
 
 LoadDataFromRFile <- function(){

@@ -17,7 +17,7 @@ shinyUI(fluidPage(
   sidebarLayout(
     sidebarPanel(
       textInput("inputtext", "Give your input text", "How are you "),
-      h5('The next word predictor may take sometime to load', align = "left"),
+      helpText("Type in a sentence above and the results will display to the right. It may take sometime to load"),
       sliderInput("noOfPredictedWord",
                   "Number of Predicted words:",
                   min = 1,
@@ -28,9 +28,15 @@ shinyUI(fluidPage(
     # Show a plot of the generated distribution
     mainPanel(
       tabsetPanel(
-        tabPanel("Prediction ", plotOutput("distPlot")),
-        tabPanel("Word Cloud ", verbatimTextOutput("summary")),
-        tabPanel("Summary", tableOutput("table"))
+        tabPanel("Prediction ", 
+                 h4('Next word prediction with probability', align = "center"),
+                 plotOutput('nextWOrdGraph'),
+                 h4('Word Cloud', align = "center"),
+                 plotOutput('wordCloud')
+                 ),
+        # tabPanel("Word Cloud ", plotOutput("wordCloud"),
+        #          helpText("This word cloud is after removing common words")),
+        tabPanel("Summary",  includeMarkdown("summary.Rmd"))
       )
     )
   )

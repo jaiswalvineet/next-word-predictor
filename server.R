@@ -1,4 +1,5 @@
 
+
 # This is the server logic for a Shiny web application.
 # You can find out more about building applications with Shiny here:
 #
@@ -6,18 +7,45 @@
 #
 
 library(shiny)
+library(ggplot2)
+library(wordcloud)
+
+source("WordCloud.R")
+source("BackOff-Implementation.R")
+
 
 shinyServer(function(input, output) {
-
-  output$distPlot <- renderPlot({
-
-    # generate bins based on input$bins from ui.R
-    x    <- faithful[, 2]
-    noOfPredictedWord <- seq(min(x), max(x), length.out = input$noOfPredictedWord + 1)
-
-    # draw the histogram with the specified number of bins
-    hist(x, breaks = noOfPredictedWord, col = 'darkgray', border = 'white')
-
+  
+  scoresInput <- reactive({
+    inputText <-  input$inputtext
+    noOfRecords <-  input$noOfPredictedWord
+    scores <- GetTheScope(inputText, noOfRecords)
   })
-
+  
+  
+  output$nextWOrdGraph <- renderPlot({
+  
+    scores <- scoresInput() 
+    ggplot(scores, aes(x = scores$word, y = scores$prob)) + geom_bar(stat = "identity", fill =
+                                                                    "lightblue") + theme(axis.text.x = element_text(
+                                                                      angle = 90,
+                                                                      hjust = 1,
+                                                                      vjust = 1
+                                                                    ))  + labs(title = "", x = "Predicted words", y = "probability")
+    
+  })
+  
+  output$wordCloud <- renderPlot({
+    scores <- scoresInput() 
+    wordcloud(
+      scores$word,
+      scores$prob,
+      scale = c(6, 0.5),
+      max.words = 150,
+      random.order = FALSE,
+      rot.per = 0.35,
+      use.r.layout = FALSE,
+      colors = brewer.pal(8, "Dark2")
+    )  })
+  
 })
