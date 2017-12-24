@@ -10,21 +10,28 @@ library(shiny)
 shinyUI(fluidPage(
 
   # Application title
-  titlePanel("Old Faithful Geyser Data"),
+  titlePanel("Next word predictor"),
+  tags$h4("Based on 5-gram language model and stupid backoff algorithm") ,
 
   # Sidebar with a slider input for number of bins
   sidebarLayout(
     sidebarPanel(
-      sliderInput("bins",
-                  "Number of bins:",
+      textInput("inputtext", "Give your input text", "How are you "),
+      h5('The next word predictor may take sometime to load', align = "left"),
+      sliderInput("noOfPredictedWord",
+                  "Number of Predicted words:",
                   min = 1,
                   max = 50,
-                  value = 30)
+                  value = 10)
     ),
 
     # Show a plot of the generated distribution
     mainPanel(
-      plotOutput("distPlot")
+      tabsetPanel(
+        tabPanel("Prediction ", plotOutput("distPlot")),
+        tabPanel("Word Cloud ", verbatimTextOutput("summary")),
+        tabPanel("Summary", tableOutput("table"))
+      )
     )
   )
 ))

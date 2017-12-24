@@ -23,16 +23,19 @@ GetTheScope  <- function(input, countOfPrediction)
   lastWords <-
     paste(tail(strsplit(input, split = " ")[[1]], min(stri_count_words(input), 4)), collapse = ' ')
   matching5Gram <-
-    matching5Gram %>% filter(grepl(paste("^", lastWords, sep = ''), word))
+    fiveGram %>% filter(grepl(paste("^", lastWords, sep = ''), word))
   matching5Gram <-
     matching5Gram %>% mutate(lastWord = word(word, -1))
   
   totalMatchIn4Gram <-
     fourGram %>% filter(grepl(paste("^", lastWords, "$", sep = ''), word))
-  count4 <- unlist(totalMatchIn4Gram[, 2])
-  if (count4 > 0) {
-    score4 <-
-      matching5Gram %>% mutate(prob = n / count4)
+  if (nrow(totalMatchIn4Gram) > 0)
+  {
+    count4 <- unlist(totalMatchIn4Gram[, 2])
+    if (count4 > 0) {
+      score4 <-
+        matching5Gram %>% mutate(prob = n / count4)
+    }
   }
   
   #score in 4 gram
@@ -46,12 +49,15 @@ GetTheScope  <- function(input, countOfPrediction)
   
   totalMatchIn3Gram <-
     threeGram %>% filter(grepl(paste("^", lastWords, "$", sep = ''), word))
-  count3 <- unlist(totalMatchIn3Gram[, 2])
-  if(count3 > 0){
-  score3 <-
-    matching4Gram %>% mutate(prob = 0.4 * (n / count3))
-  }
   
+  if (nrow(totalMatchIn3Gram) > 0)
+  {
+    count3 <- unlist(totalMatchIn3Gram[, 2])
+    if (count3 > 0) {
+      score3 <-
+        matching4Gram %>% mutate(prob = 0.4 * (n / count3))
+    }
+  }
   #score in 3 gram
   lastWords <-
     paste(tail(strsplit(input, split = " ")[[1]], min(stri_count_words(input), 2)), collapse = ' ')
@@ -64,10 +70,14 @@ GetTheScope  <- function(input, countOfPrediction)
   
   totalMatchIn2Gram <-
     twoGram %>% filter(grepl(paste("^", lastWords, "$", sep = ''), word))
-  count2 <- unlist(totalMatchIn2Gram[, 2])
-  if(count2 > 0 ){
-  score2 <-
-    matching3Gram %>% mutate(prob = 0.4 * 0.4 * (n / count2))
+  
+  if (nrow(totalMatchIn2Gram) > 0)
+  {
+    count2 <- unlist(totalMatchIn2Gram[, 2])
+    if (count2 > 0) {
+      score2 <-
+        matching3Gram %>% mutate(prob = 0.4 * 0.4 * (n / count2))
+    }
   }
   
   #score in 2 gram
@@ -83,15 +93,22 @@ GetTheScope  <- function(input, countOfPrediction)
   
   totalMatchIn1Gram <-
     oneGram %>% filter(grepl(paste("^", lastWords, "$", sep = ''), word))
-  count1 <- unlist(totalMatchIn1Gram[, 2])
-  if(count1 > 0){
-  score1 <-
-    matching2Gram %>% mutate(prob = 0.4 * 0.4 * 0.4 * (n / count1))
+  
+  if (nrow(totalMatchIn1Gram) > 0)
+  {
+    count1 <- unlist(totalMatchIn1Gram[, 2])
+    if (count1 > 0) {
+      score1 <-
+        matching2Gram %>% mutate(prob = 0.4 * 0.4 * 0.4 * (n / count1))
+    }
   }
   
-  score <- union_all(score4, score3)
-  score <- union_all(score, score2)
-  score <- union_all(score, score1)
+  score <- suppressWarnings(union_all(score, score4))
+  score <- suppressWarnings(union_all(score, score3))
+  score <- suppressWarnings(union_all(score, score2))
+  score <- suppressWarnings(union_all(score, score1))
+  
+  rm(score1,score2,score3,score4)
   
   score <- subset(score, select=c("n", "lastWord", "prob"))
   score <- rename(score, "word" = "lastWord")
@@ -99,7 +116,7 @@ GetTheScope  <- function(input, countOfPrediction)
   data(stop_words)
   score <- score %>% anti_join(stop_words)
   
-  score <- head(score %>% arrange(desc(prob)),countOfPrediction)
+  score <- head(unique(score %>% filter(!is.na(word))%>% arrange(desc(prob))),countOfPrediction)
   
   return(score)
   
@@ -126,6 +143,3 @@ CleanText <- function(text) {
   cleantext <- removeWords(cleantext,badwords)
 }
 
-text <- 'The guy in front of me just bought a pound of bacon, a bouquet, and a case of'
-
-GetTheScope(text,10)

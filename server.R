@@ -13,10 +13,10 @@ shinyServer(function(input, output) {
 
     # generate bins based on input$bins from ui.R
     x    <- faithful[, 2]
-    bins <- seq(min(x), max(x), length.out = input$bins + 1)
+    noOfPredictedWord <- seq(min(x), max(x), length.out = input$noOfPredictedWord + 1)
 
     # draw the histogram with the specified number of bins
-    hist(x, breaks = bins, col = 'darkgray', border = 'white')
+    hist(x, breaks = noOfPredictedWord, col = 'darkgray', border = 'white')
 
   })
 
